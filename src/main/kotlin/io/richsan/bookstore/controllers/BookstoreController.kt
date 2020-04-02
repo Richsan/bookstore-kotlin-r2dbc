@@ -1,15 +1,18 @@
 package io.richsan.bookstore.controllers
 
-import org.springframework.web.bind.annotation.GetMapping
-import org.springframework.web.bind.annotation.RequestMapping
-import org.springframework.web.bind.annotation.RestController
+import io.richsan.bookstore.models.requests.Bookrequest
+import io.richsan.bookstore.models.responses.BookResponse
+import io.richsan.bookstore.services.BookService
+import org.springframework.web.bind.annotation.*
 import reactor.core.publisher.Mono
 
 @RestController
 @RequestMapping("/api")
-class BookstoreController {
+class BookstoreController(
+        val bookService: BookService
+) {
 
-    @GetMapping("/hello")
-    fun helloWord() : Mono<String> = Mono.just("Hello World")
+    @PostMapping("/book")
+    fun insertBook(@RequestBody request : Bookrequest) : Mono<BookResponse> = bookService.insertBook(request)
 
 }
