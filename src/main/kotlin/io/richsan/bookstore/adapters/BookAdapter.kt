@@ -5,7 +5,10 @@ import io.richsan.bookstore.models.entities.BookEntity
 import io.richsan.bookstore.models.entities.LanguageEntity
 import io.richsan.bookstore.models.entities.PublisherEntity
 import io.richsan.bookstore.models.requests.Bookrequest
+import io.richsan.bookstore.models.responses.AuthorResponse
 import io.richsan.bookstore.models.responses.BookResponse
+import io.richsan.bookstore.models.responses.LanguageResponse
+import io.richsan.bookstore.models.responses.PublisherResponse
 import org.reactivestreams.Publisher
 import reactor.core.publisher.Mono
 import reactor.util.context.Context
@@ -32,7 +35,28 @@ fun Context.toBookEntity() : BookEntity {
 fun BookEntity.toResponse() : BookResponse = BookResponse(
         id = id!!,
         title = title,
-        price = price
+        price = price,
+        releaseDate = releaseDate,
+        languages = languages.map { it.toResponse() },
+        authors = authors.map { it.toResponse() },
+        publisher = publisher.toResponse(),
+        availableQty = avialableQty
 
 )
 
+fun PublisherEntity.toResponse() : PublisherResponse = PublisherResponse(
+        id = id,
+        name = name
+)
+
+fun AuthorEntity.toResponse() : AuthorResponse = AuthorResponse(
+        id = id,
+        name = name,
+        biography = biography,
+        citationName = citationName
+)
+
+fun LanguageEntity.toResponse() : LanguageResponse = LanguageResponse(
+        id = id,
+        description = description
+)
