@@ -13,6 +13,6 @@ class BookstoreController(
 ) {
 
     @PostMapping("/book")
-    fun insertBook(@RequestBody request : Bookrequest) : Mono<BookResponse> = bookService.insertBook(request)
+    fun insertBook(@RequestBody request : Bookrequest) : Mono<BookResponse> = bookService.insertABook(request)
 
 }
