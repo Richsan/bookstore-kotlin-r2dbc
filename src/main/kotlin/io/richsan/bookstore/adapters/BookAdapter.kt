@@ -4,7 +4,10 @@ import io.richsan.bookstore.models.entities.AuthorEntity
 import io.richsan.bookstore.models.entities.BookEntity
 import io.richsan.bookstore.models.entities.LanguageEntity
 import io.richsan.bookstore.models.entities.PublisherEntity
+import io.richsan.bookstore.models.requests.AuthorRequest
 import io.richsan.bookstore.models.requests.Bookrequest
+import io.richsan.bookstore.models.requests.LanguageRequest
+import io.richsan.bookstore.models.requests.PublisherRequest
 import io.richsan.bookstore.models.responses.AuthorResponse
 import io.richsan.bookstore.models.responses.BookResponse
 import io.richsan.bookstore.models.responses.LanguageResponse
@@ -45,18 +48,33 @@ fun BookEntity.toResponse() : BookResponse = BookResponse(
 )
 
 fun PublisherEntity.toResponse() : PublisherResponse = PublisherResponse(
-        id = id,
+        id = id!!,
         name = name
 )
 
 fun AuthorEntity.toResponse() : AuthorResponse = AuthorResponse(
-        id = id,
+        id = id!!,
         name = name,
         biography = biography,
         citationName = citationName
 )
 
 fun LanguageEntity.toResponse() : LanguageResponse = LanguageResponse(
+        id = id,
+        description = description
+)
+
+fun AuthorRequest.toEntity() : AuthorEntity = AuthorEntity(
+        name = name,
+        biography = biography,
+        citationName = citationName
+)
+
+fun PublisherRequest.toEntity() : PublisherEntity = PublisherEntity(
+        name = name
+)
+
+fun LanguageRequest.toEntity() : LanguageEntity = LanguageEntity(
         id = id,
         description = description
 )

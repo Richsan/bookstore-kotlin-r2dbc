@@ -14,7 +14,7 @@ biography character varying NOT NULL
 @Table("book_author")
 data class AuthorEntity(
         @Id
-        val id : Long,
+        val id : Long? = null,
         val name : String,
         val citationName : String,
         val biography : String

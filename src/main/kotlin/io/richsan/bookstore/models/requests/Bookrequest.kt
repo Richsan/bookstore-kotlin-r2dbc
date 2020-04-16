@@ -11,3 +11,18 @@ data class Bookrequest (
         val authors : List<Long>,
         val languages : List<String>
 )
+
+data class AuthorRequest (
+        val name : String,
+        val citationName : String,
+        val biography : String
+)
+
+data class PublisherRequest (
+        val name  : String
+)
+
+data class LanguageRequest (
+        val id: String,
+        val description: String
+)

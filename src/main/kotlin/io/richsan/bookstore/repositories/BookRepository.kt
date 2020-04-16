@@ -24,7 +24,7 @@ class BookRepository {
                 .value("price", bookEntity.price)
                 .value("available_qty", bookEntity.avialableQty)
                 .value("release_date",bookEntity.releaseDate)
-                .value("publisher_id", bookEntity.publisher.id)
+                .value("publisher_id", bookEntity.publisher)
                 .fetch()
                 .all()
                 .map { it["id"] as Long}
@@ -37,12 +37,12 @@ class BookRepository {
         val bookAuthorRelations = Mono.just(bookEntity)
                 .flatMapIterable { it.authors }
                 .map { it.id }
-                .map { BookAuthorRelationship(bookId = bookEntity.id!!, authorId = it) }
+                .map { BookAuthorRelationship(bookId = bookEntity.id!!, authorId = it!!) }
 
         val bookLanguageRelations = Mono.just(bookEntity)
                 .flatMapIterable { it.languages }
                 .map { it.id }
-                .map { BookLanguageRelationship(bookId = bookEntity.id!!, languageId = it) }
+                .map { BookLanguageRelationship(bookId = bookEntity.id!!, languageId = it!!) }
 
         return databaseClient.insert().into(BookAuthorRelationship::class.java)
                 .using(bookAuthorRelations)
