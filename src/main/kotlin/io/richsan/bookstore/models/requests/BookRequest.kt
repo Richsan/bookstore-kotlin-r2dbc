@@ -2,7 +2,7 @@ package io.richsan.bookstore.models.requests
 
 import java.time.LocalDate
 
-data class Bookrequest (
+data class BookRequest (
         val title : String,
         val price : Long,
         val availableQty : Int,

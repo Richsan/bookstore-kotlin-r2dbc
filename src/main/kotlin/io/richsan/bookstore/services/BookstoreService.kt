@@ -4,7 +4,7 @@ import io.richsan.bookstore.adapters.toBookEntity
 import io.richsan.bookstore.adapters.toEntity
 import io.richsan.bookstore.adapters.toResponse
 import io.richsan.bookstore.models.requests.AuthorRequest
-import io.richsan.bookstore.models.requests.Bookrequest
+import io.richsan.bookstore.models.requests.BookRequest
 import io.richsan.bookstore.models.requests.LanguageRequest
 import io.richsan.bookstore.models.requests.PublisherRequest
 import io.richsan.bookstore.models.responses.AuthorResponse
@@ -27,7 +27,7 @@ class BookstoreService(
         val publisherRepository: PublisherRepository
 ) {
 
-    fun insertABook(request : Bookrequest) : Mono<BookResponse> {
+    fun insertABook(request : BookRequest) : Mono<BookResponse> {
 
         val languageEntities = languageRepository.findAllById(request.languages)
                 .collectList()

@@ -5,21 +5,18 @@ import io.richsan.bookstore.models.entities.BookEntity
 import io.richsan.bookstore.models.entities.LanguageEntity
 import io.richsan.bookstore.models.entities.PublisherEntity
 import io.richsan.bookstore.models.requests.AuthorRequest
-import io.richsan.bookstore.models.requests.Bookrequest
+import io.richsan.bookstore.models.requests.BookRequest
 import io.richsan.bookstore.models.requests.LanguageRequest
 import io.richsan.bookstore.models.requests.PublisherRequest
 import io.richsan.bookstore.models.responses.AuthorResponse
 import io.richsan.bookstore.models.responses.BookResponse
 import io.richsan.bookstore.models.responses.LanguageResponse
 import io.richsan.bookstore.models.responses.PublisherResponse
-import org.reactivestreams.Publisher
-import reactor.core.publisher.Mono
 import reactor.util.context.Context
-import java.util.concurrent.Flow
 
 
 fun Context.toBookEntity() : BookEntity {
-    val request : Bookrequest = this.get("request") as Bookrequest
+    val request : BookRequest = this.get("request") as BookRequest
     val authors : List<AuthorEntity> = this.get("authors") as List<AuthorEntity>
     val languages : List<LanguageEntity> = this.get("languages") as List<LanguageEntity>
     val publisher : PublisherEntity = this.get("publisher") as PublisherEntity

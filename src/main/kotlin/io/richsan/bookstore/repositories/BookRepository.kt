@@ -24,7 +24,7 @@ class BookRepository {
                 .value("price", bookEntity.price)
                 .value("available_qty", bookEntity.avialableQty)
                 .value("release_date",bookEntity.releaseDate)
-                .value("publisher_id", bookEntity.publisher)
+                .value("publisher_id", bookEntity.publisher.id!!)
                 .fetch()
                 .all()
                 .map { it["id"] as Long}
