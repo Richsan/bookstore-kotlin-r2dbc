@@ -11,6 +11,7 @@ import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
 import org.springframework.http.MediaType.*
 import org.springframework.stereotype.Service
+import org.springframework.web.reactive.function.server.ServerRequest
 import org.springframework.web.reactive.function.server.router
 import reactor.core.publisher.Mono
 import reactor.kotlin.core.publisher.toMono
@@ -20,16 +21,16 @@ import reactor.kotlin.core.publisher.toMono
 class BookstoreController(
         val bookstoreService: BookstoreService
 ) {
+    fun insertBook(serverRequest: ServerRequest, requestBody : BookRequest)
+            : Mono<BookResponse> = bookstoreService.insertABook(requestBody)
 
+    fun insertAuthor(serverRequest: ServerRequest, requestBody: AuthorRequest)
+            : Mono<AuthorResponse> = bookstoreService.insertAnAuthor(requestBody)
 
-    fun insertBook(request : BookRequest) : Mono<BookResponse> = bookstoreService.insertABook(request)
+    fun insertPublisher(serverRequest: ServerRequest, requestBody: PublisherRequest)
+            : Mono<PublisherResponse> = bookstoreService.insertAPublisher(requestBody)
 
-    fun insertAuthor(request: AuthorRequest) : Mono<AuthorResponse> = bookstoreService.insertAnAuthor(request)
-
-    fun insertPublisher(request: PublisherRequest) : Mono<PublisherResponse> = bookstoreService.insertAPublisher(request)
-
-    fun insertLanguage(request: LanguageRequest) : Mono<LanguageResponse> = bookstoreService.insertALanguage(request)
-
-
+    fun insertLanguage(serverRequest: ServerRequest, requestBody: LanguageRequest)
+            : Mono<LanguageResponse> = bookstoreService.insertALanguage(requestBody)
 
 }

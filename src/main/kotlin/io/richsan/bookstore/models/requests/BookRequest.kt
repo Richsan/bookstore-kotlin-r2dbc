@@ -45,3 +45,6 @@ fun BookRequest.validate() : Flux<Violation> = Flux.from(this.authors.notEmptyVa
         .concatWith(this.title.maxSizeValidator("title", 100))
         .concatWith(this.price.minValidator("price", 0))
         .concatWith(this.releaseDate.presentOrPastValidator("releaseDate"))
+
+fun LanguageRequest.validate() : Flux<Violation> = Flux.from(this.id.nonEmptyValidator("id"))
+        .concatWith(this.description.nonEmptyValidator("description"))

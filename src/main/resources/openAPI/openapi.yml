@@ -1,0 +1,943 @@
+openapi: 3.0.0
+
+servers:
+  - url: /
+
+info:
+  description: "This is a bookstore rest api server"
+  version: 1.0.0
+  title: Bookstore API
+  contact:
+    email: rich@programmer.net
+  license:
+    name: MIT
+    url: https://opensource.org/licenses/MIT
+tags:
+  - name: books
+    description: Everything about bookstore books
+    externalDocs:
+      description: Find out more
+      url: http://swagger.io
+  - name: authors
+    description: Book authors informations
+  - name: publishers
+    description: Operations book publishers
+    externalDocs:
+      description: Find out more about our store
+      url: http://swagger.io
+  - name: languages
+    description: Operations book languages
+    externalDocs:
+      description: Find out more about our store
+      url: http://swagger.io
+
+
+paths:
+  /api/books:
+    post:
+      tags:
+        - books
+      summary: Add a new book to the bookstore
+      description: ""
+      operationId: addBook
+      requestBody:
+        description: Book request body
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/BookRequest"
+          application/xml:
+            schema:
+              $ref: "#/components/schemas/BookRequest"
+      responses:
+        "201":
+          description: Successfully inserted a new book
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/BookResponse"
+            application/xml:
+              schema:
+                $ref: "#/components/schemas/BookResponse"
+        "400":
+          description: Invalid input
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ApiBadRequestResponse"
+            application/xml:
+              schema:
+                $ref: "#/components/schemas/ApiBadRequestResponse"
+        "5XX":
+          description: Processing request error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ApiErrorResponse"
+            application/xml:
+              schema:
+                $ref: "#/components/schemas/ApiErrorResponse"
+
+  /api/books/{bookId}:
+    patch:
+      tags:
+        - books
+      parameters:
+        - name: bookId
+          in: path
+          description: The book unique id
+          required: true
+          explode: true
+          schema:
+            type: string
+      summary: Update an existing book
+      description: ""
+      operationId: updateBook
+      requestBody:
+        description: Book update request body
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/BookRequest"
+          application/xml:
+            schema:
+              $ref: "#/components/schemas/BookRequest"
+      responses:
+        "200":
+          description: Successfully updated an existing book
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/BookResponse"
+            application/xml:
+              schema:
+                $ref: "#/components/schemas/BookResponse"
+        "400":
+          description: Invalid input
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ApiBadRequestResponse"
+            application/xml:
+              schema:
+                $ref: "#/components/schemas/ApiBadRequestResponse"
+        "404":
+          description: Book not found
+        "5XX":
+          description: Processing request error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ApiErrorResponse"
+            application/xml:
+              schema:
+                $ref: "#/components/schemas/ApiErrorResponse"
+
+    get:
+      tags:
+        - books
+      parameters:
+        - name: bookId
+          in: path
+          description: The book unique id
+          required: true
+          explode: true
+          schema:
+            type: string
+      summary: Get a book information
+      description: ""
+      operationId: getABook
+      responses:
+        "200":
+          description: Successfully retrieved a book
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/BookResponse"
+            application/xml:
+              schema:
+                $ref: "#/components/schemas/BookResponse"
+        "400":
+          description: Invalid input
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ApiBadRequestResponse"
+            application/xml:
+              schema:
+                $ref: "#/components/schemas/ApiBadRequestResponse"
+        "404":
+          description: Book not found
+        "5XX":
+          description: Processing request error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ApiErrorResponse"
+            application/xml:
+              schema:
+                $ref: "#/components/schemas/ApiErrorResponse"
+
+    delete:
+      tags:
+        - books
+      parameters:
+        - name: bookId
+          in: path
+          description: The book unique id
+          required: true
+          explode: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: Successfully deleted an existing book
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/BookResponse"
+            application/xml:
+              schema:
+                $ref: "#/components/schemas/BookResponse"
+        "400":
+          description: Invalid input
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ApiBadRequestResponse"
+            application/xml:
+              schema:
+                $ref: "#/components/schemas/ApiBadRequestResponse"
+        "404":
+          description: Book not found
+        "5XX":
+          description: Processing request error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ApiErrorResponse"
+            application/xml:
+              schema:
+                $ref: "#/components/schemas/ApiErrorResponse"
+
+  /api/authors:
+    post:
+      tags:
+        - authors
+      summary: Add a new author to the bookstore
+      description: ""
+      operationId: addBook
+      requestBody:
+        description: Author request body
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/AuthorRequest"
+          application/xml:
+            schema:
+              $ref: "#/components/schemas/AuthorRequest"
+      responses:
+        "201":
+          description: Successfully inserted a new author
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/AuthorResponse"
+            application/xml:
+              schema:
+                $ref: "#/components/schemas/AuthorResponse"
+        "400":
+          description: Invalid input
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ApiBadRequestResponse"
+            application/xml:
+              schema:
+                $ref: "#/components/schemas/ApiBadRequestResponse"
+        "5XX":
+          description: Processing request error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ApiErrorResponse"
+            application/xml:
+              schema:
+                $ref: "#/components/schemas/ApiErrorResponse"
+
+  /api/authors/{authorId}:
+    get:
+      tags:
+        - authors
+      summary: Get author by their id
+      description: ""
+      operationId: getAnAuthor
+      parameters:
+        - name: authorId
+          in: path
+          description: The author unique id
+          required: true
+          explode: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: Successfully retrieved an existing author
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/AuthorResponse"
+            application/xml:
+              schema:
+                $ref: "#/components/schemas/AuthorResponse"
+        "400":
+          description: Invalid input
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ApiBadRequestResponse"
+            application/xml:
+              schema:
+                $ref: "#/components/schemas/ApiBadRequestResponse"
+        "404":
+          description: Author not found
+        "5XX":
+          description: Processing request error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ApiErrorResponse"
+            application/xml:
+              schema:
+                $ref: "#/components/schemas/ApiErrorResponse"
+    patch:
+      tags:
+        - authors
+      parameters:
+        - name: authorId
+          in: path
+          description: "The author's unique id"
+          required: true
+          explode: true
+          schema:
+            type: string
+      summary: Update an existing author by their id
+      description: ""
+      operationId: updateAuthor
+      requestBody:
+        description: Author request body
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/AuthorRequest"
+          application/xml:
+            schema:
+              $ref: "#/components/schemas/AuthorRequest"
+      responses:
+        "200":
+          description: Successfully updated an existing author
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/AuthorResponse"
+            application/xml:
+              schema:
+                $ref: "#/components/schemas/AuthorResponse"
+        "400":
+          description: Invalid input
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ApiBadRequestResponse"
+            application/xml:
+              schema:
+                $ref: "#/components/schemas/ApiBadRequestResponse"
+        "404":
+          description: Author not found
+        "5XX":
+          description: Processing request error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ApiErrorResponse"
+            application/xml:
+              schema:
+                $ref: "#/components/schemas/ApiErrorResponse"
+    delete:
+      tags:
+        - authors
+      parameters:
+        - name: authorId
+          in: path
+          description: The author unique id
+          required: true
+          explode: true
+          schema:
+            type: string
+        - name: onCascade
+          in: query
+          description: If setted true, delete all books associated on cascade like
+          required: false
+          explode: true
+          schema:
+            type: boolean
+            default: false
+      summary: Delete an existing author by their id
+      operationId: deleteAuthor
+      responses:
+        "200":
+          description: Successfully deleted an existing author
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/AuthorResponse"
+            application/xml:
+              schema:
+                $ref: "#/components/schemas/AuthorResponse"
+        "400":
+          description: Invalid input
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ApiBadRequestResponse"
+            application/xml:
+              schema:
+                $ref: "#/components/schemas/ApiBadRequestResponse"
+        "404":
+          description: Author not found
+        "5XX":
+          description: Processing request error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ApiErrorResponse"
+            application/xml:
+              schema:
+                $ref: "#/components/schemas/ApiErrorResponse"
+  /api/publishers/:
+    post:
+      tags:
+        - publishers
+      summary: Add a new publisher to the bookstore
+      description: ""
+      operationId: addPublisher
+      requestBody:
+        $ref: "#/components/schemas/PublisherRequest"
+      responses:
+        "201":
+          description: Successfully inserted a new publisher
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/PublisherResponse"
+            application/xml:
+              schema:
+                $ref: "#/components/schemas/PublisherResponse"
+        "400":
+          description: Invalid input
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ApiBadRequestResponse"
+            application/xml:
+              schema:
+                $ref: "#/components/schemas/ApiBadRequestResponse"
+        "5XX":
+          description: Processing request error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ApiErrorResponse"
+            application/xml:
+              schema:
+                $ref: "#/components/schemas/ApiErrorResponse"
+  /api/publishers/{publisherId}:
+    patch:
+      tags:
+        - publishers
+      summary: Update an existing publisher on bookstore
+      description: ""
+      operationId: updateAPublisher
+      parameters:
+        - name: publisherId
+          in: path
+          description: The unique publisher identifier
+          required: true
+          explode: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: Successfully updated an existing publisher
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/PublisherRequest"
+            application/xml:
+              schema:
+                $ref: "#/components/schemas/PublisherRequest"
+        "400":
+          description: Invalid input
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ApiBadRequestResponse"
+            application/xml:
+              schema:
+                $ref: "#/components/schemas/ApiBadRequestResponse"
+        "404":
+          description: Publisher not found
+        "5XX":
+          description: Processing request error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ApiErrorResponse"
+            application/xml:
+              schema:
+                $ref: "#/components/schemas/ApiErrorResponse"
+    get:
+      tags:
+        - publishers
+      summary: Get a publisher by their id
+      description: ""
+      operationId: getAPublisher
+      parameters:
+        - name: publisherId
+          in: path
+          description: The unique publisher identifier
+          required: true
+          explode: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: Successfully retrieved an existing author
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/PublisherResponse"
+            application/xml:
+              schema:
+                $ref: "#/components/schemas/PublisherResponse"
+        "400":
+          description: Invalid input
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ApiBadRequestResponse"
+            application/xml:
+              schema:
+                $ref: "#/components/schemas/ApiBadRequestResponse"
+        "404":
+          description: Publisher not found
+        "5XX":
+          description: Processing request error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ApiErrorResponse"
+            application/xml:
+              schema:
+                $ref: "#/components/schemas/ApiErrorResponse"
+    delete:
+      tags:
+        - publishers
+      parameters:
+        - name: publisherId
+          in: path
+          description: The unique publisher identifier
+          required: true
+          explode: true
+          schema:
+            type: string
+        - name: onCascade
+          in: query
+          description: If setted true, delete all books associated on cascade like
+          required: false
+          explode: true
+          schema:
+            type: boolean
+            default: false
+      summary: Delete an existing publisher by their id
+      operationId: deleteAPublisher
+      responses:
+        "200":
+          description: Successfully deleted an existing publisher
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/PublisherResponse"
+            application/xml:
+              schema:
+                $ref: "#/components/schemas/PublisherResponse"
+        "400":
+          description: Invalid input
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ApiBadRequestResponse"
+            application/xml:
+              schema:
+                $ref: "#/components/schemas/ApiBadRequestResponse"
+        "404":
+          description: Publisher not found
+        "5XX":
+          description: Processing request error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ApiErrorResponse"
+            application/xml:
+              schema:
+                $ref: "#/components/schemas/ApiErrorResponse"
+  /api/languages/{languageId}:
+    put:
+      tags:
+        - languages
+      summary: Add language to bookstore or update if already exists
+      description: ""
+      operationId: addLanguage
+      requestBody:
+        description: Author request body
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/LanguageRequest"
+          application/xml:
+            schema:
+              $ref: "#/components/schemas/LanguageRequest"
+      parameters:
+        - name: languageId
+          in: path
+          description: The language identifier
+          required: true
+          explode: true
+          schema:
+            type: string
+            example: "PT-BR"
+      responses:
+        "200 or 201":
+          description: Successfully inserted a new language (201) or successfully updated an existing language (200)
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/LanguageResponse"
+            application/xml:
+              schema:
+                $ref: "#/components/schemas/LanguageResponse"
+        "400":
+          description: Invalid input
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ApiBadRequestResponse"
+            application/xml:
+              schema:
+                $ref: "#/components/schemas/ApiBadRequestResponse"
+        "404":
+          description: Language not found
+        "5XX":
+          description: Processing request error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ApiErrorResponse"
+            application/xml:
+              schema:
+                $ref: "#/components/schemas/ApiErrorResponse"
+    get:
+      tags:
+        - languages
+      summary: Get language by their id
+      description: ""
+      operationId: getALanguage
+      parameters:
+        - name: languageId
+          in: path
+          description: The language identifier
+          required: true
+          explode: true
+          schema:
+            type: string
+            example: "PT-BR"
+      responses:
+        "200":
+          description: Successfully retrieved an existing language
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/LanguageResponse"
+            application/xml:
+              schema:
+                $ref: "#/components/schemas/LanguageResponse"
+        "400":
+          description: Invalid input
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ApiBadRequestResponse"
+            application/xml:
+              schema:
+                $ref: "#/components/schemas/ApiBadRequestResponse"
+        "404":
+          description: Language not found
+        "5XX":
+          description: Processing request error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ApiErrorResponse"
+            application/xml:
+              schema:
+                $ref: "#/components/schemas/ApiErrorResponse"
+    delete:
+      tags:
+        - languages
+      parameters:
+        - name: languageId
+          in: path
+          description: The language identifier
+          required: true
+          explode: true
+          schema:
+            type: string
+            example: "PT-BR"
+        - name: onCascade
+          in: query
+          description: If setted true, delete all books associated on cascade like
+          required: false
+          explode: true
+          schema:
+            type: boolean
+            default: false
+      summary: Delete an existing language by their id
+      operationId: deleteALanguage
+      responses:
+        "200":
+          description: Successfully deleted an existing language
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/LanguageResponse"
+            application/xml:
+              schema:
+                $ref: "#/components/schemas/LanguageResponse"
+        "400":
+          description: Invalid input
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ApiBadRequestResponse"
+            application/xml:
+              schema:
+                $ref: "#/components/schemas/ApiBadRequestResponse"
+        "404":
+          description: Language not found
+        "5XX":
+          description: Processing request error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ApiErrorResponse"
+            application/xml:
+              schema:
+                $ref: "#/components/schemas/ApiErrorResponse"
+components:
+  schemas:
+    AuthorRequest:
+      type: object
+      properties:
+        name:
+          type: string
+          example: "Joanne Jo Rowling"
+        citationName:
+          type: string
+          example: "J.K. Rowling"
+        biography:
+          type: string
+          example: "J. K. Rowling, is a British author, screenwriter, producer, and philanthropist.\nShe is best known for writing the Harry Potter fantasy series, which has won multiple awards and sold more than 500 million copies."
+      xml:
+        name: Author
+    AuthorResponse:
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int64
+        name:
+          type: string
+          example: "Joanne Jo Rowling"
+        citationName:
+          type: string
+          example: "J.K. Rowling"
+        biography:
+          type: string
+          example: "J. K. Rowling, is a British author, screenwriter, producer, and philanthropist.\nShe is best known for writing the Harry Potter fantasy series, which has won multiple awards and sold more than 500 million copies."
+      xml:
+        name: Author
+    PublisherRequest:
+      type: object
+      properties:
+        name:
+          type: string
+          example: "Bloomsbury Publishing Plc"
+      xml:
+        name: Publisher
+    PublisherResponse:
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int64
+        name:
+          type: string
+      xml:
+        name: Publisher
+    LanguageRequest:
+      type: object
+      properties:
+        description:
+          type: string
+          example: "Brazillian portuguese"
+      xml:
+        name: Language
+    LanguageResponse:
+      type: object
+      properties:
+        id:
+          type: string
+          example: "PT-BR"
+        description:
+          type: string
+          example: "Brazillian portuguese"
+      xml:
+        name: Language
+    BookRequest:
+      type: object
+      properties:
+        price:
+          type: integer
+          format: int64
+          example: 2049
+        availableQty:
+          type: integer
+          format: int32
+          example: 42
+        publisher:
+          type: integer
+          format: int32
+          example: 0
+        title:
+          type: string
+          example: "Harry Potter and the philosopher's stone"
+        authors:
+          type: array
+          xml:
+            name: author
+            wrapped: true
+          items:
+            type: integer
+            format: int64
+        languages:
+          type: array
+          xml:
+            name: language
+            wrapped: true
+          items:
+            type: string
+            example: "PT-BR"
+      xml:
+        name: Book
+    BookResponse:
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int64
+        price:
+          type: integer
+          format: int64
+          example: 2049
+        availableQty:
+          type: integer
+          format: int32
+          example: 42
+        publisher:
+          $ref: "#/components/schemas/PublisherResponse"
+        title:
+          type: string
+          example: "Harry Potter and the philosopher's stone"
+        authors:
+          type: array
+          xml:
+            name: authors
+            wrapped: true
+          items:
+            $ref: "#/components/schemas/AuthorResponse"
+        languages:
+          type: array
+          xml:
+            name: languages
+            wrapped: true
+          items:
+            $ref: "#/components/schemas/LanguageResponse"
+      xml:
+        name: Book
+
+    ApiViolation:
+      type: object
+      properties:
+        field:
+          type: string
+        error:
+          type: string
+
+    ApiBadRequestResponse:
+      type: object
+      properties:
+        queryParam:
+          type: array
+          xml:
+            name: queryParam
+            wrapped: false
+          items:
+            $ref: "#/components/schemas/ApiViolation"
+        pathParam:
+          type: array
+          xml:
+            name: pathParam
+            wrapped: false
+          items:
+            $ref: "#/components/schemas/ApiViolation"
+        body:
+          type: array
+          xml:
+            name: body
+            wrapped: false
+          items:
+            $ref: "#/components/schemas/ApiViolation"
+
+    ApiErrorResponse:
+      type: object
+      properties:
+        code:
+          type: integer
+          format: int32
+          example: 1
+        type:
+          type: string
+          example: "Unkown Error"
+        message:
+          type: string
+          example: "An inexpected error occured.Please contact the service administrator."
+    ApiResponse:
+      type: object
+      properties:
+        code:
+          type: integer
+          format: int32
+        type:
+          type: string
+        message:
+          type: string

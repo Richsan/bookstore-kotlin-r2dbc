@@ -2,9 +2,13 @@ package io.richsan.bookstore.utils.validators
 
 import io.richsan.bookstore.models.requests.Violation
 import io.richsan.bookstore.utils.*
+import reactor.core.publisher.Flux
 import reactor.core.publisher.Mono
+import reactor.kotlin.core.publisher.toFlux
 import reactor.kotlin.core.publisher.toMono
 import java.time.temporal.Temporal
+import kotlin.reflect.KFunction
+import kotlin.reflect.jvm.reflect
 
 fun List<Any>.notEmptyValidator(fieldName : String) : Mono<Violation> = this.toMono()
         .filter { it.isEmpty() }
@@ -57,3 +61,14 @@ fun Temporal.presentOrPastValidator(fieldName: String) : Mono<Violation>
         = this.toMono()
         .filter {it.inFuture() }
         .map { Violation(fieldName, "This should be in the present or in the past") }
+
+
+fun  KFunction<Mono<Violation>>.toFlux() :  KFunction<Flux<Violation>> {
+    return { fieldName : String -> this.call(fieldName).toFlux()}.reflect()!!
+}
+
+fun Function<Flux<Violation>>.concatWith(validator : Function<Mono<Violation>>) : Function<Flux<Violation>> {
+    return {fieldName : String ->
+        this.reflect()!!.call(fieldName).concatWith(validator.reflect()!!.call(fieldName))
+    }
+}
