@@ -26,7 +26,6 @@ data class PublisherRequest (
 )
 
 data class LanguageRequest (
-        val id: String,
         val description: String
 )
 
@@ -46,5 +45,5 @@ fun BookRequest.validate() : Flux<Violation> = Flux.from(this.authors.notEmptyVa
         .concatWith(this.price.minValidator("price", 0))
         .concatWith(this.releaseDate.presentOrPastValidator("releaseDate"))
 
-fun LanguageRequest.validate() : Flux<Violation> = Flux.from(this.id.nonEmptyValidator("id"))
-        .concatWith(this.description.nonEmptyValidator("description"))
+fun LanguageRequest.validate() : Flux<Violation> = Flux.from(
+        this.description.nonEmptyValidator("description"))

@@ -1,6 +1,7 @@
 package io.richsan.bookstore.utils
 
 import io.richsan.bookstore.models.requests.Violation
+import org.springframework.http.HttpMethod
 import org.springframework.http.HttpStatus
 import org.springframework.util.MultiValueMap
 import org.springframework.web.reactive.function.server.*
@@ -11,6 +12,7 @@ import reactor.kotlin.core.publisher.toMono
 import reactor.util.context.Context
 import java.math.BigDecimal
 import java.math.BigInteger
+import java.net.URI
 import java.time.*
 import java.time.temporal.Temporal
 import java.util.*
@@ -60,53 +62,121 @@ private fun Flux<Violation>.getMapErrorResponse(mapKey : String)
         .filter{it.isNotEmpty()}
         .map { mapOf(mapKey to it) }
 
-fun postRequest(requestClass : KClass<out Any>,
-                bodyViolations : KFunction<Flux<Violation>>? = null,
-                queryViolations : Map<String,ParamRequest>? = null,
-                pathViolations : Map<String,ParamRequest>? = null,
-                handler : KFunction<Mono<out Any>>,
-                status: HttpStatus = HttpStatus.CREATED) : (ServerRequest) -> Mono<ServerResponse> {
+fun request(method : HttpMethod,
+            requestClass : KClass<out Any>? = null,
+            bodyViolations : KFunction<Flux<Violation>>? = null,
+            queryViolations : Map<String,ParamRequest>? = null,
+            pathViolations : Map<String,ParamRequest>? = null,
+            handler : KFunction<Mono< out ResponseObj<out Any>>>) : (ServerRequest) -> Mono<ServerResponse> {
     return { request : ServerRequest ->
 
-        request.bodyToMono(requestClass.java)
-                .flatMap {
-                    val successfulResponse  = it.toMono()
-                            .flatMap { handler.call(request,it) }
-                            .flatMap { ServerResponse.status(status)
-                                    .location(request.uri())
-                                    .bodyValue(it)}
+        val queryViolationsFlux : Mono<Map<String,List<Violation>>> = queryViolations?.run {
+            entries
+                    .toFlux()
+                    .getQueryViolations(request.queryParams())
+                    .getMapErrorResponse("queryParams")
+        } ?:  Mono.empty()
 
-                    val queryViolationsFlux : Mono<Map<String,List<Violation>>> = queryViolations?.run {
-                        entries
-                                .toFlux()
-                                .getQueryViolations(request.queryParams())
-                                .getMapErrorResponse("queryParams")
-                    } ?:  Mono.empty()
+        val pathViolationsFlux : Mono<Map<String,List<Violation>>> = pathViolations?.run {
+            entries
+                    .toFlux()
+                    .getPathViolations(request.pathVariables())
+                    .getMapErrorResponse("pathParams")
+        } ?:  Mono.empty()
 
-                    val pathViolationsFlux : Mono<Map<String,List<Violation>>> = pathViolations?.run {
-                        entries
-                                .toFlux()
-                                .getPathViolations(request.pathVariables())
-                                .getMapErrorResponse("pathParams")
-                    } ?:  Mono.empty()
+        val violations = Flux.from(queryViolationsFlux)
+                .concatWith(pathViolationsFlux)
 
-                    val bodyViolationsFlux  = bodyViolations.executeAndGetViolations(it)
-                            .getMapErrorResponse("body")
+        if(HttpMethod.DELETE == method ||
+                HttpMethod.GET == method ||
+                HttpMethod.HEAD == method ||
+                HttpMethod.TRACE == method ||
+                requestClass == null) {
+            val successfulResponse  = handler.call(request)
+                    .flatMap { it.toResponse(request) }
 
-                    Flux.from(queryViolationsFlux)
-                            .concatWith(pathViolationsFlux)
-                            .concatWith(bodyViolationsFlux)
-                            .collectList()
-                            .filter { it.isNotEmpty() }
-                            .flatMap { ServerResponse.badRequest().bodyValue(it)}
-                            .switchIfEmpty(successfulResponse)
-                }
+             violations
+                    .collectList()
+                    .filter { it.isNotEmpty() }
+                    .flatMap { ServerResponse.badRequest().bodyValue(it)}
+                    .switchIfEmpty(successfulResponse)
+        } else {
+
+            request.bodyToMono(requestClass.java)
+                    .flatMap {
+                        val successfulResponse  = it.toMono()
+                                .flatMap { handler.call(request,it) }
+                                .flatMap { it.toResponse(request) }
+
+                        val bodyViolationsFlux  = bodyViolations.executeAndGetViolations(it)
+                                .getMapErrorResponse("body")
+
+                        violations
+                                .concatWith(bodyViolationsFlux)
+                                .collectList()
+                                .filter { it.isNotEmpty() }
+                                .flatMap { ServerResponse.badRequest().bodyValue(it)}
+                                .switchIfEmpty(successfulResponse)
+                    }
+        }
     }
 }
 
+fun postRequest(requestClass : KClass<out Any>? = null,
+                bodyViolations : KFunction<Flux<Violation>>? = null,
+                queryViolations : Map<String,ParamRequest>? = null,
+                pathViolations : Map<String,ParamRequest>? = null,
+                handler : KFunction<Mono<out ResponseObj<out Any>>>) : (ServerRequest) -> Mono<ServerResponse>
+        = request(HttpMethod.POST,
+                    requestClass,
+                    bodyViolations,
+                    queryViolations,
+                    pathViolations,
+                    handler)
 
+fun putRequest(requestClass : KClass<out Any>? = null,
+                bodyViolations : KFunction<Flux<Violation>>? = null,
+                queryViolations : Map<String,ParamRequest>? = null,
+                pathViolations : Map<String,ParamRequest>? = null,
+                handler : KFunction<Mono<out ResponseObj<out Any>>>) : (ServerRequest) -> Mono<ServerResponse>
+        = request(HttpMethod.PUT,
+                requestClass,
+                bodyViolations,
+                queryViolations,
+                pathViolations,
+                handler)
 
+fun patchRequest(requestClass : KClass<out Any>,
+                bodyViolations : KFunction<Flux<Violation>>? = null,
+                queryViolations : Map<String,ParamRequest>? = null,
+                pathViolations : Map<String,ParamRequest>? = null,
+                handler : KFunction<Mono<out ResponseObj<out Any>>>) : (ServerRequest) -> Mono<ServerResponse>
+        = request(HttpMethod.PATCH,
+                requestClass,
+                bodyViolations,
+                queryViolations,
+                pathViolations,
+                handler)
 
+fun getRequest(queryViolations : Map<String,ParamRequest>? = null,
+                pathViolations : Map<String,ParamRequest>? = null,
+               handler : KFunction<Mono<out ResponseObj<out Any>>>) : (ServerRequest) -> Mono<ServerResponse>
+        = request(HttpMethod.GET,
+            null,
+            null,
+            queryViolations,
+            pathViolations,
+            handler)
+
+fun deleteRequest(queryViolations : Map<String,ParamRequest>? = null,
+                  pathViolations : Map<String,ParamRequest>? = null,
+                  handler : KFunction<Mono<out ResponseObj<out Any>>>) : (ServerRequest) -> Mono<ServerResponse>
+        = request(HttpMethod.DELETE,
+            null,
+            null,
+            queryViolations,
+            pathViolations,
+            handler)
 
 operator fun Number.compareTo(other: Number): Int {
     return when (this) {

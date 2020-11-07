@@ -2,6 +2,7 @@ package io.richsan.bookstore.repositories
 
 import io.richsan.bookstore.models.entities.BookEntity
 import io.richsan.bookstore.models.entities.LanguageEntity
+import io.richsan.bookstore.models.entities.relationships.BookLanguageRelationship
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.data.r2dbc.core.DatabaseClient
 import org.springframework.data.r2dbc.query.Criteria
@@ -31,5 +32,15 @@ class LanguageRepository {
                 .matching(where("id").`in`(languageIds))
                 .`as`(LanguageEntity::class.java)
                 .all()
+    }
+
+    fun findAllByBookId(bookId: Long) : Flux<LanguageEntity> {
+        return databaseClient.select().from(BookLanguageRelationship::class.java)
+                .matching(where("book_id").`is`(bookId))
+                .fetch()
+                .all()
+                .map { it.languageId }
+                .collectList()
+                .flatMapMany { findAllById(it) }
     }
 }

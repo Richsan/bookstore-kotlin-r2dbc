@@ -3,7 +3,9 @@ package io.richsan.bookstore.controllers
 import io.richsan.bookstore.models.requests.*
 import io.richsan.bookstore.utils.ParamRequest
 import io.richsan.bookstore.utils.postRequest
+import io.richsan.bookstore.utils.putRequest
 import io.richsan.bookstore.utils.validators.digitValidator
+import io.richsan.bookstore.utils.validators.nonEmptyValidator
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
 import org.springframework.http.MediaType
@@ -28,25 +30,19 @@ class BookstoreRouter {
             ServerResponse.temporaryRedirect(URI("/doc/swagger-ui.html")).build()
         }
         ("/api" and accept(MediaType.APPLICATION_JSON)) .nest {
-            POST("/books", postRequest(
-                    requestClass = BookRequest::class,
-                    bodyViolations = BookRequest::validate,
-                    handler = bookstoreController::insertBook))
 
             POST("/authors", postRequest(
                     requestClass = AuthorRequest::class,
                     handler = bookstoreController::insertAuthor
             ))
-            POST("/publisher", postRequest(
+            POST("/publishers", postRequest(
                     requestClass = PublisherRequest::class,
                     handler = bookstoreController::insertPublisher))
 
-            POST("/languages", postRequest(
+            PUT("/languages/{id}", putRequest(
                     requestClass = LanguageRequest::class,
                     bodyViolations = LanguageRequest::validate,
-                    handler = bookstoreController::insertLanguage,
-                    queryViolations = mapOf("name" to ParamRequest(required = true,
-                            violations = listOf(String::digitQueryValidator)))))
+                    handler = bookstoreController::insertLanguage))
         }
     }
 }

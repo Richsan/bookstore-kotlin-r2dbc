@@ -6,7 +6,7 @@ import reactor.core.publisher.Mono
 import reactor.kotlin.core.publisher.toFlux
 import kotlin.reflect.KFunction1
 
-data class ParamRequest(val required: Boolean = false,
+data class ParamRequest(val required: Boolean = true,
                         val violations: List<KFunction1<String, Flux<Violation>>> = listOf()) {
     fun validate(value : String) : Flux<Violation> {
         return this.violations.toFlux()

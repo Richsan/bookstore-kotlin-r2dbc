@@ -27,7 +27,7 @@ fun Context.toBookEntity() : BookEntity {
             publisher = publisher,
             authors = authors,
             languages = languages,
-            avialableQty = request.availableQty,
+            availableQty = request.availableQty,
             releaseDate = request.releaseDate
     )
 }
@@ -40,7 +40,7 @@ fun BookEntity.toResponse() : BookResponse = BookResponse(
         languages = languages.map { it.toResponse() },
         authors = authors.map { it.toResponse() },
         publisher = publisher.toResponse(),
-        availableQty = avialableQty
+        availableQty = availableQty
 
 )
 
@@ -71,7 +71,7 @@ fun PublisherRequest.toEntity() : PublisherEntity = PublisherEntity(
         name = name
 )
 
-fun LanguageRequest.toEntity() : LanguageEntity = LanguageEntity(
+fun LanguageRequest.toEntity(id: String) : LanguageEntity = LanguageEntity(
         id = id,
         description = description
 )

@@ -8,5 +8,5 @@ import org.springframework.data.relational.core.mapping.Table
 data class PublisherEntity (
         @Id
         val id : Long? = null,
-        val name  : String
+        val name  : String = ""
 )

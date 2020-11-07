@@ -6,12 +6,13 @@ import io.richsan.bookstore.models.responses.BookResponse
 import io.richsan.bookstore.models.responses.LanguageResponse
 import io.richsan.bookstore.models.responses.PublisherResponse
 import io.richsan.bookstore.services.BookstoreService
-import io.richsan.bookstore.utils.postRequest
+import io.richsan.bookstore.utils.*
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
 import org.springframework.http.MediaType.*
 import org.springframework.stereotype.Service
 import org.springframework.web.reactive.function.server.ServerRequest
+import org.springframework.web.reactive.function.server.ServerResponse
 import org.springframework.web.reactive.function.server.router
 import reactor.core.publisher.Mono
 import reactor.kotlin.core.publisher.toMono
@@ -22,15 +23,30 @@ class BookstoreController(
         val bookstoreService: BookstoreService
 ) {
     fun insertBook(serverRequest: ServerRequest, requestBody : BookRequest)
-            : Mono<BookResponse> = bookstoreService.insertABook(requestBody)
+            : Mono<ResponseObj<BookResponse>> = bookstoreService.insertABook(requestBody)
+                .map { postResponse(body = it,
+                                    resource = it.id.toString()) }
+
+    fun getABook(serverRequest: ServerRequest)
+            : Mono<ResponseObj<BookResponse>> =
+            Mono.just(serverRequest.pathVariable("bookId"))
+                    .map { it.toLong() }
+                    .flatMap { bookstoreService.getABook(it)}
+                    .map { getResponse(body = it) }
 
     fun insertAuthor(serverRequest: ServerRequest, requestBody: AuthorRequest)
-            : Mono<AuthorResponse> = bookstoreService.insertAnAuthor(requestBody)
+            : Mono<ResponseObj<AuthorResponse>> = bookstoreService.insertAnAuthor(requestBody)
+                 .map { postResponse(body = it,
+                                     resource = it.id.toString()) }
 
     fun insertPublisher(serverRequest: ServerRequest, requestBody: PublisherRequest)
-            : Mono<PublisherResponse> = bookstoreService.insertAPublisher(requestBody)
+            : Mono<ResponseObj<PublisherResponse>> = bookstoreService.insertAPublisher(requestBody)
+                .map { postResponse(body = it,
+                                    resource = it.id.toString()) }
 
     fun insertLanguage(serverRequest: ServerRequest, requestBody: LanguageRequest)
-            : Mono<LanguageResponse> = bookstoreService.insertALanguage(requestBody)
+            : Mono<ResponseObj<LanguageResponse>> = bookstoreService.insertALanguage(serverRequest.pathVariable("id"),requestBody)
+                .map { putResponse(body = it,
+                        resourceCreated = true) }
 
 }

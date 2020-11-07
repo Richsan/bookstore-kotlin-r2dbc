@@ -13,9 +13,12 @@ data class BookEntity(
         val id : Long? = null,
         val title : String,
         val price : Long,
-        val avialableQty : Int,
+        val availableQty : Int,
         val releaseDate : LocalDate,
-        val authors: List<AuthorEntity>,
-        val languages : List<LanguageEntity>,
+        @Transient
+        val authors: List<AuthorEntity> = listOf(),
+        @Transient
+        val languages : List<LanguageEntity> = listOf(),
+        @Transient
         val publisher : PublisherEntity
 )

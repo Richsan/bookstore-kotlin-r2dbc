@@ -422,7 +422,14 @@ paths:
       description: ""
       operationId: addPublisher
       requestBody:
-        $ref: "#/components/schemas/PublisherRequest"
+        description: Publisher request body
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/PublisherRequest"
+          application/xml:
+            schema:
+              $ref: "#/components/schemas/PublisherRequest"
       responses:
         "201":
           description: Successfully inserted a new publisher
@@ -824,10 +831,13 @@ components:
           type: integer
           format: int32
           example: 42
+        releaseDate:
+          type: string
+          example: "1997-06-26"
         publisher:
           type: integer
           format: int32
-          example: 0
+          example: 1
         title:
           type: string
           example: "Harry Potter and the philosopher's stone"
@@ -839,6 +849,7 @@ components:
           items:
             type: integer
             format: int64
+            example: 1
         languages:
           type: array
           xml:

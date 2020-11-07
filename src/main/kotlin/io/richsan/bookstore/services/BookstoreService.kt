@@ -55,6 +55,27 @@ class BookstoreService(
                 .map { it.toResponse() }
     }
 
+    fun getABook(bookId : Long) : Mono<BookResponse> {
+        return bookRepository.getABook(bookId)
+                .flatMap {
+                    val authors = authorRepository.findAllByBookId(it.id!!)
+                            .collectList()
+                    val languages = languageRepository.findAllByBookId(it.id)
+                            .collectList()
+
+                    val publisher = publisherRepository.findById(it.publisher.id!!)
+
+                    Mono.subscriberContext()
+                            .putIntoContext("authors", authors)
+                            .putIntoContext("languages", languages)
+                            .putIntoContext("publisher", publisher)
+                            .map { ctx -> it.copy(languages = ctx["languages"],
+                                    authors = ctx["authors"],
+                                    publisher = ctx["publisher"])  }
+                }
+                .map { it.toResponse() }
+    }
+
     fun insertAnAuthor(request : AuthorRequest) : Mono<AuthorResponse> = Mono.just(request)
             .map { it.toEntity() }
             .flatMap { authorRepository.save(it) }
@@ -66,8 +87,8 @@ class BookstoreService(
             .flatMap { publisherRepository.save(it) }
             .map { it.toResponse() }
 
-    fun insertALanguage(request : LanguageRequest) : Mono<LanguageResponse> = Mono.just(request)
-            .map { it.toEntity() }
+    fun insertALanguage(id: String,request : LanguageRequest) : Mono<LanguageResponse> = Mono.just(request)
+            .map { it.toEntity(id) }
             .flatMap { languageRepository.save(it) }
             .map { it.toResponse() }
 
